@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LandingAI — AI landing page generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css?v=full-width-theme-hover-smooth-20261009-2">
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo"><span class="logo-icon">✦</span><span>LandingAI</span></div>
+    <p class="tagline">Describe your audience. Get a live landing page you can edit and publish.</p>
+  </header>
+
+  <main class="generator-container">
+    <form id="generator-form" class="generator-form" novalidate>
+      <div id="form-error" class="form-error hidden" role="alert"></div>
+      <section id="form-step" class="wizard-step" aria-labelledby="form-step-title">
+        <div class="wizard-heading"><span class="step-kicker">STEP 1 OF 2</span><h1 id="form-step-title">Tell us about your landing page</h1><p>Share the details and choose the sections you need. Next, you’ll pick a visual theme.</p></div>
+      <div class="form-grid">
+        <div class="form-column">
+          <div class="form-group">
+            <label for="targetAudience">Target audience <span class="required">*</span></label>
+            <input type="text" id="targetAudience" name="targetAudience" placeholder="e.g. Busy professionals aged 28–45" maxlength="200" required>
+          </div>
+          <div class="form-group">
+            <label for="primaryProblem">Primary problem solved <span class="required">*</span></label>
+            <textarea id="primaryProblem" name="primaryProblem" rows="3" placeholder="e.g. No time to cook healthy meals during the work week" maxlength="400" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="pagePurpose">Landing page purpose <span class="required">*</span></label>
+            <select id="pagePurpose" name="pagePurpose" required>
+              <option value="">Select purpose…</option>
+              <option value="lead-generation">Lead generation</option>
+              <option value="product-launch">Product launch</option>
+              <option value="saas-signup">SaaS sign-up</option>
+              <option value="event-registration">Event registration</option>
+              <option value="ebook-download">eBook / resource download</option>
+              <option value="service-booking">Service booking</option>
+              <option value="brand-awareness">Brand awareness</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="ctaUrl">CTA button link <span class="optional">(optional)</span></label>
+            <input type="text" inputmode="url" id="ctaUrl" name="ctaUrl" placeholder="https://example.com/signup" autocomplete="url">
+            <p class="hint">Where the main button sends visitors. Leave blank to add a link later. Supports http(s), mailto: or tel: links.</p>
+          </div>
+          <div class="form-group">
+            <label for="brandName">Brand name (optional)</label>
+            <input type="text" id="brandName" name="brandName" placeholder="Leave blank and the AI will suggest one" maxlength="60">
+          </div>
+          <div class="form-group">
+            <label for="tone">Writing tone</label>
+            <select id="tone" name="tone">
+              <option value="professional" selected>Professional — clear & trustworthy</option>
+              <option value="friendly">Friendly — warm & conversational</option>
+              <option value="bold">Bold — confident & energetic</option>
+              <option value="minimal">Minimal — clean & sparse</option>
+              <option value="urgent">Urgent — action-oriented</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-column">
+          <div class="form-group colors-group">
+            <label>Brand colours</label>
+            <div class="color-inputs">
+              <div class="color-field"><label for="primaryColor">Primary</label><input type="color" id="primaryColor" name="primaryColor" value="#6366f1"><span id="primary-hex">#6366f1</span></div>
+              <div class="color-field"><label for="secondaryColor">Secondary</label><input type="color" id="secondaryColor" name="secondaryColor" value="#ec4899"><span id="secondary-hex">#ec4899</span></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="images">Your images (optional)</label>
+            <input type="file" id="images" name="images" accept="image/jpeg,image/png,image/webp,image/gif" multiple>
+            <p class="hint">Up to 3: used for the hero, about section and first product. You can add more, or videos, in the editor.</p>
+          </div>
+          <div class="form-group">
+            <label for="preferredImages">Artwork style (used where you add no image)</label>
+            <select id="preferredImages" name="preferredImages">
+              <option value="abstract">Abstract / gradient</option>
+              <option value="people">People / lifestyle</option>
+              <option value="product">Product focus</option>
+              <option value="nature">Nature / calm</option>
+              <option value="tech">Tech / minimal</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Sections <span class="required">*</span></label>
+            <div class="sections-grid">
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="header" checked> Header / nav</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="hero" checked> Hero</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="about" checked> About / problem</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="services" checked> Services / features</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="products"> Products</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="video"> Video</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="testimonials" checked> Testimonials</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="contact"> Contact form</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="cta" checked> Closing CTA</label>
+              <label class="checkbox-label"><input type="checkbox" name="sections" value="footer" checked> Footer</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-lg" id="continue-btn">Continue to themes →</button>
+      </div>
+      </section>
+
+      <section id="theme-step" class="wizard-step hidden" aria-labelledby="theme-step-title">
+        <div class="wizard-heading"><span class="step-kicker">STEP 2 OF 2</span><h1 id="theme-step-title">Choose your landing page theme</h1><p>Choose one of the 10 ready-made designs or create your own custom theme.</p></div>
+        <fieldset class="theme-fieldset">
+          <legend>Available themes</legend>
+          <p class="hint theme-hint">Your content, selected sections and brand colours will be carried into the generated page.</p>
+          <input type="hidden" name="pageTheme" id="pageTheme" value="modern-saas">
+          <div class="theme-grid" id="theme-grid" role="radiogroup" aria-label="Landing page theme"></div>
+          <div id="custom-theme-panel" class="custom-theme-panel hidden">
+            <h2>Customize your theme</h2>
+            <p class="hint">Build your own look. The brand colours from step 1 will be used as the accent colours.</p>
+            <div class="custom-theme-grid">
+              <div class="form-group"><label for="customMode">Appearance</label><select id="customMode" name="customMode"><option value="light">Light</option><option value="dark">Dark</option></select></div>
+              <div class="form-group"><label for="customFont">Typography</label><select id="customFont" name="customFont"><option value="modern">Modern</option><option value="classic">Classic</option><option value="elegant">Elegant serif</option><option value="friendly">Friendly</option><option value="techy">Tech / geometric</option><option value="playful">Playful</option><option value="editorial">Editorial</option></select></div>
+              <div class="form-group"><label for="customRadius">Corner style</label><select id="customRadius" name="customRadius"><option value="soft">Soft rounded</option><option value="square">Square</option><option value="round">Round</option><option value="pill">Pill</option></select></div>
+              <div class="form-group"><label for="customSpacing">Spacing</label><select id="customSpacing" name="customSpacing"><option value="normal">Balanced</option><option value="compact">Compact</option><option value="airy">Spacious</option></select></div>
+              <div class="form-group"><label for="customHero">Hero layout</label><select id="customHero" name="customHero"><option value="split">Split layout</option><option value="centered">Centered</option><option value="immersive">Immersive</option></select></div>
+              <div class="form-group"><label for="customCards">Cards</label><select id="customCards" name="customCards"><option value="shadow">Soft shadows</option><option value="flat">Flat</option><option value="bordered">Bordered</option><option value="glass">Glass</option></select></div>
+              <div class="form-group"><label for="customButtons">Buttons</label><select id="customButtons" name="customButtons"><option value="solid">Solid</option><option value="gradient">Gradient</option><option value="outline">Outline</option></select></div>
+            </div>
+          </div>
+        </fieldset>
+        <div class="wizard-actions">
+          <button type="button" class="btn btn-secondary" id="back-btn">← Back to form</button>
+          <button type="button" class="btn btn-primary btn-lg" id="generate-btn">Generate landing page →</button>
+        </div>
+      </section>
+    </form>
+  </main>
+
+  <section class="my-pages history-panel hidden" id="my-pages">
+    <details id="history-details" class="history-details">
+      <summary>
+        <span class="history-summary-title">History</span>
+        <span class="history-summary-subtitle">Previous landing pages</span>
+        <span class="history-count" id="history-count">0</span>
+      </summary>
+      <div class="history-content">
+        <p class="history-empty hidden" id="history-empty">Your generated landing pages will appear here.</p>
+        <ul id="my-pages-list" aria-label="Previous landing pages"></ul>
+      </div>
+    </details>
+  </section>
+
+  <script src="/js/generator.js?v=history-20261009-3"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Editor — LandingAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link id="lp-fonts" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/page.css">
+</head>
+<body class="editor">
+  <div id="gate" class="gate hidden">
+    <h1>Edit access needed</h1>
+    <p id="gate-msg">This device doesn't have the edit key for this page. Paste it below (it's in the edit link you got when you created the page, after <code>#t=</code>).</p>
+    <div class="url-box"><input type="text" id="gate-token" placeholder="Edit key"><button class="btn btn-primary" id="gate-go">Open</button></div>
+    <p style="margin-top:1rem"><a href="/" style="color:var(--primary)">← Create a new page</a></p>
+  </div>
+
+  <div id="app" class="hidden">
+    <div id="notice" class="notice hidden"><span id="notice-text"></span><button class="btn btn-ghost" id="notice-x">Dismiss</button></div>
+    <div class="editor-toolbar">
+      <div class="tb-group">
+        <a href="/" class="btn btn-ghost">← Home</a>
+        <span id="status-chip" class="chip">Draft</span>
+        <span id="save-state"></span>
+      </div>
+      <div class="tb-group">
+        <div class="seg" role="group" aria-label="Mode"><button id="mode-edit" class="on">Edit</button><button id="mode-preview">Preview</button></div>
+        <div class="menu-wrap">
+          <button class="btn btn-secondary" id="add-section-btn">+ Add section ▾</button>
+          <div class="menu hidden" id="add-section-menu"></div>
+        </div>
+        <button class="btn btn-secondary" id="ai-btn">✨ Ask AI</button>
+        <button class="btn btn-secondary" id="settings-btn">⚙ Settings</button>
+      </div>
+      <div class="tb-group">
+        <a class="btn btn-ghost hidden" id="open-live" target="_blank" rel="noopener">Open live page ↗</a>
+        <button class="btn btn-secondary" id="leads-btn">Leads</button>
+        <button class="btn btn-primary" id="publish-btn">Publish</button>
+      </div>
+    </div>
+    <div id="canvas" class="canvas editing"></div>
+  </div>
+
+  <!-- settings drawer -->
+  <aside id="settings" class="drawer hidden" aria-label="Page settings">
+    <h2>Page settings <button class="btn btn-ghost" id="settings-x">✕</button></h2>
+    <fieldset><legend>Main button (CTA)</legend>
+      <div class="form-group"><label for="s-ctaLabel">Label</label><input type="text" id="s-ctaLabel" maxlength="60"></div>
+      <div class="form-group"><label for="s-ctaUrl">Link</label><input type="text" id="s-ctaUrl" placeholder="https://…"><p class="hint" id="s-ctaUrl-err" style="color:#fca5a5"></p></div>
+    </fieldset>
+    <fieldset><legend>Brand</legend>
+      <div class="form-group"><label for="s-brand">Brand name</label><input type="text" id="s-brand" maxlength="80"></div>
+      <div class="row2">
+        <div class="color-field"><label for="s-primary">Primary</label><input type="color" id="s-primary"></div>
+        <div class="color-field"><label for="s-secondary">Secondary</label><input type="color" id="s-secondary"></div>
+      </div>
+      <div class="form-group" style="margin-top:.9rem"><label for="s-style">Artwork style (when no image)</label>
+        <select id="s-style"><option value="abstract">Abstract</option><option value="people">People</option><option value="product">Product</option><option value="nature">Nature</option><option value="tech">Tech</option></select></div>
+    </fieldset>
+    <fieldset><legend>Search &amp; sharing</legend>
+      <div class="form-group"><label for="s-seoTitle">Page title</label><input type="text" id="s-seoTitle" maxlength="120"></div>
+      <div class="form-group"><label for="s-seoDesc">Description</label><textarea id="s-seoDesc" rows="3" maxlength="300"></textarea></div>
+    </fieldset>
+    <fieldset><legend>Footer links (shown only if filled)</legend>
+      <div class="form-group"><label for="s-privacy">Privacy policy URL</label><input type="text" id="s-privacy" placeholder="https://…"></div>
+      <div class="form-group"><label for="s-terms">Terms URL</label><input type="text" id="s-terms" placeholder="https://…"></div>
+    </fieldset>
+    <fieldset><legend>Danger zone</legend>
+      <button class="btn btn-danger" id="delete-page">Delete this page</button>
+    </fieldset>
+  </aside>
+
+  <!-- Ask AI drawer -->
+  <aside id="ai-panel" class="drawer hidden" aria-label="Ask AI">
+    <h2>✨ Ask AI <button class="btn btn-ghost" id="ai-x" aria-label="Close">✕</button></h2>
+    <p class="hint">For bigger changes: a new look, a new section, a rewrite. For small tweaks, click the text on the page or use Settings.</p>
+    <div class="form-group">
+      <label for="ai-prompt">What should change?</label>
+      <textarea id="ai-prompt" rows="4" maxlength="1000" placeholder="e.g. Make it dark and premium with a centered hero"></textarea>
+    </div>
+    <div class="ai-chips" id="ai-chips" aria-label="Example requests"></div>
+    <div class="ai-actions">
+      <button class="btn btn-primary" id="ai-go">Apply with AI</button>
+      <button class="btn btn-secondary" id="ai-undo" disabled>↶ Undo last AI change</button>
+    </div>
+    <div id="ai-result" class="ai-result hidden" role="status" aria-live="polite"></div>
+  </aside>
+
+  <!-- media modal -->
+  <div id="media-modal" class="modal hidden">
+    <div class="modal-content left">
+      <h2>Image or video</h2>
+      <label for="media-file">Upload a file (JPG, PNG, WebP, GIF, MP4, WebM — max 25 MB)</label>
+      <input type="file" id="media-file" accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm">
+      <label for="media-url">…or paste a link (image URL, YouTube, Vimeo or .mp4)</label>
+      <div class="url-box"><input type="text" id="media-url" placeholder="https://"><button class="btn btn-secondary" id="media-use-url">Use link</button></div>
+      <label for="media-alt">Description for screen readers (images)</label>
+      <input type="text" id="media-alt" maxlength="200">
+      <p id="media-status" class="hint"></p>
+      <div class="modal-actions" style="justify-content:space-between;margin-top:1rem">
+        <button class="btn btn-danger" id="media-remove">Remove</button>
+        <button class="btn btn-ghost" id="media-cancel">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- publish modal -->
+  <div id="publish-modal" class="modal hidden">
+    <div class="modal-content">
+      <h2 id="pub-title">🎉 Your page is live</h2>
+      <p>Anyone with this link can see it:</p>
+      <div class="url-box"><input type="text" id="pub-url" readonly><button class="btn btn-secondary" id="pub-copy">Copy</button></div>
+      <div class="modal-actions" style="margin-top:1.25rem">
+        <a class="btn btn-primary" id="pub-open" target="_blank" rel="noopener">Open page ↗</a>
+        <button class="btn btn-secondary" id="pub-unpublish">Unpublish</button>
+        <button class="btn btn-ghost" id="pub-close">Close</button>
+      </div>
+      <p class="modal-note">Edits stay in your draft until you press Publish again.</p>
+    </div>
+  </div>
+
+  <!-- leads modal -->
+  <div id="leads-modal" class="modal hidden">
+    <div class="modal-content left" style="max-width:760px">
+      <h2>Contact form messages</h2>
+      <div id="leads-body"></div>
+      <div class="modal-actions" style="margin-top:1rem"><button class="btn btn-ghost" id="leads-close">Close</button></div>
+    </div>
+  </div>
+
+  <div id="icon-pop" class="popover hidden">
+    <div class="emoji-grid" id="emoji-grid"></div>
+    <input type="text" id="emoji-custom" placeholder="Or type / paste an emoji" maxlength="8">
+  </div>
+
+  <script src="/js/render.js"></script>
+  <script src="/js/editor.js"></script>
+</body>
+</html>
